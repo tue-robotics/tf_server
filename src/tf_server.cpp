@@ -3,6 +3,8 @@
 #include <tf/transform_listener.h>
 
 #include <tf_server/LookupTransform.h>
+#include <tf_server/TransformPoint.h>
+#include <tf_server/TransformPose.h>
 
 #include <std_msgs/String.h>
 #include <std_srvs/Empty.h>
@@ -10,9 +12,9 @@
 tf::TransformListener* tf_listener_;
 
 bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::LookupTransform::Response& res) {
-    tf::StampedTransform t;
-
     try{
+        tf::StampedTransform t;
+
         if (req.fixed_frame == "") {
             tf_listener_->lookupTransform(req.target_frame, req.source_frame, req.time, t);
         } else {
@@ -26,6 +28,45 @@ bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::Loo
     return true;
 }
 
+bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::TransformPoint::Response& res) {
+    tf::Stamped<tf::Point> p_in;
+    tf::pointStampedMsgToTF(req.point, p_in);
+
+    try{
+        tf::Stamped<tf::Point> p_out;
+
+        if (req.fixed_frame == "") {
+            tf_listener_->transformPoint(req.target_frame, p_in, p_out);
+        } else {
+            tf_listener_->transformPoint(req.target_frame, req.target_time, p_in, req.fixed_frame, p_out);
+        }
+        tf::pointStampedTFToMsg(p_out, res.point);
+    } catch (tf::TransformException& ex){
+        res.error_msg = ex.what();
+    }
+
+    return true;
+}
+
+bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::TransformPose::Response& res) {
+    tf::Stamped<tf::Pose> p_in;
+    tf::poseStampedMsgToTF(req.pose, p_in);
+
+    try{
+        tf::Stamped<tf::Pose> p_out;
+
+        if (req.fixed_frame == "") {
+            tf_listener_->transformPose(req.target_frame, p_in, p_out);
+        } else {
+            tf_listener_->transformPose(req.target_frame, req.target_time, p_in, req.fixed_frame, p_out);
+        }
+        tf::poseStampedTFToMsg(p_out, res.pose);
+    } catch (tf::TransformException& ex){
+        res.error_msg = ex.what();
+    }
+
+    return true;
+}
 
 int main(int argc, char **argv) {
     // Initialize node
@@ -35,7 +76,9 @@ int main(int argc, char **argv) {
     tf_listener_ = new tf::TransformListener();
 
     // advertising a service to provide service
-    ros::ServiceServer service = nh.advertiseService("/tf/lookup_transform", srvLookupTransform);
+    ros::ServiceServer srv_lookup_transform = nh.advertiseService("/tf/lookup_transform", srvLookupTransform);
+    ros::ServiceServer srv_transform_point = nh.advertiseService("/tf/transform_point", srvTransformPoint);
+    ros::ServiceServer srv_transform_pose = nh.advertiseService("/tf/transform_pose", srvTransformPose);
 
     // spin
     ros::spin();
