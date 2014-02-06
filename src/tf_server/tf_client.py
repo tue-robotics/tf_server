@@ -10,9 +10,16 @@ class TFClient:
 
     def __init__(self, wait_for_service=True):
         if wait_for_service:
-            rospy.wait_for_service('tf/lookup_transform')
-            rospy.wait_for_service('tf/transform_point')
-            rospy.wait_for_service('tf/transform_pose')
+            found = False
+            while not found and not rospy.is_shutdown():
+                found = True                            
+                try:
+                    rospy.wait_for_service('tf/lookup_transform', timeout=1.0)
+                    rospy.wait_for_service('tf/transform_point', timeout=1.0)
+                    rospy.wait_for_service('tf/transform_pose', timeout=1.0)
+                except rospy.ROSException:
+                    found = False
+                    rospy.loginfo("Waiting for tf server")                    
 
         self._srv_lookup_transform = rospy.ServiceProxy('tf/lookup_transform', tf_server.srv.LookupTransform)
         self._srv_transform_point = rospy.ServiceProxy('tf/transform_point', tf_server.srv.TransformPoint)
