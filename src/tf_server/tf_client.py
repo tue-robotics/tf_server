@@ -4,6 +4,8 @@ import rospy
 
 import tf_server.srv
 
+import tf
+
 class TFClient:
 
     def __init__(self, wait_for_service=True):
@@ -26,6 +28,7 @@ class TFClient:
         resp = self._srv_transform_point(req)
         
         if resp.error_msg:
+            raise tf.Exception(resp.error_msg)
             rospy.logerr(resp.error_msg)
         else:
             return resp.point
@@ -40,6 +43,7 @@ class TFClient:
         resp = self._srv_transform_pose(req)
         
         if resp.error_msg:
+            raise tf.Exception(resp.error_msg)
             rospy.logerr(resp.error_msg)
         else:
             return resp.pose
@@ -56,6 +60,7 @@ class TFClient:
         resp = self._srv_lookup_transform(req)
 
         if resp.error_msg:
+            raise tf.Exception(resp.error_msg)
             rospy.logerr(resp.error_msg)
         else:
             return resp.transform.transform.translation, resp.transform.transform.rotation
