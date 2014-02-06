@@ -1,0 +1,9 @@
+geometry_msgs/PoseStamped pose
+string target_frame
+
+# More advanced lookup (time travel)
+time target_time
+string fixed_frame
+---
+geometry_msgs/PoseStamped pose
+string error_msg

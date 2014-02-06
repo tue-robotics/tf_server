@@ -1,0 +1,9 @@
+geometry_msgs/PointStamped point
+string target_frame
+
+# More advanced lookup (time travel)
+time target_time
+string fixed_frame
+---
+geometry_msgs/PointStamped point
+string error_msg
