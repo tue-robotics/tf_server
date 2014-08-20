@@ -6,6 +6,7 @@ project(tf_server)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   message_generation
+  roscpp
   geometry_msgs
   tf
 )
@@ -96,6 +97,9 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+add_executable(tf_server src/tf_server.cpp)
+target_link_libraries(tf_server ${catkin_LIBRARIES})
 
 ## Declare a cpp library
 # add_library(tf_server
