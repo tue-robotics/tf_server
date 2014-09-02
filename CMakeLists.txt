@@ -3,6 +3,8 @@ project(tf_server)
 
 find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs tf message_generation)
 
+catkin_python_setup()
+
 add_service_files( FILES LookupTransform.srv TransformPoint.srv TransformPose.srv)
 
 generate_messages(DEPENDENCIES geometry_msgs)
