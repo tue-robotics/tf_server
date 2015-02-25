@@ -14,16 +14,16 @@ class TFClient:
             while not found and not rospy.is_shutdown():
                 found = True                            
                 try:
-                    rospy.wait_for_service('tf/lookup_transform', timeout=1.0)
-                    rospy.wait_for_service('tf/transform_point', timeout=1.0)
-                    rospy.wait_for_service('tf/transform_pose', timeout=1.0)
+                    rospy.wait_for_service('/tf/lookup_transform', timeout=1.0)
+                    rospy.wait_for_service('/tf/transform_point', timeout=1.0)
+                    rospy.wait_for_service('/tf/transform_pose', timeout=1.0)
                 except rospy.ROSException:
                     found = False
                     rospy.loginfo("Waiting for tf server")                    
 
-        self._srv_lookup_transform = rospy.ServiceProxy('tf/lookup_transform', tf_server.srv.LookupTransform)
-        self._srv_transform_point = rospy.ServiceProxy('tf/transform_point', tf_server.srv.TransformPoint)
-        self._srv_transform_pose = rospy.ServiceProxy('tf/transform_pose', tf_server.srv.TransformPose)
+        self._srv_lookup_transform = rospy.ServiceProxy('/tf/lookup_transform', tf_server.srv.LookupTransform)
+        self._srv_transform_point = rospy.ServiceProxy('/tf/transform_point', tf_server.srv.TransformPoint)
+        self._srv_transform_pose = rospy.ServiceProxy('/tf/transform_pose', tf_server.srv.TransformPose)
 
     def transformPoint(self, target_frame, point, target_time=rospy.Time(0), fixed_frame=''):
         req = tf_server.srv.TransformPointRequest()
