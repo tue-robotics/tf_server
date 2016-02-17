@@ -26,7 +26,10 @@ bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::Loo
             return true;
         } catch (tf::TransformException& ex){
             res.error_msg = ex.what();
-            ROS_WARN("Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            if (i == 0)
+                ROS_WARN_DELAYED_THROTTLE(10, "Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            else
+                ROS_ERROR("Transform error at 2nd attempt");
 
             // set time to 0-time (= get latest transform) and try again
             req.time = ros::Time();
@@ -54,7 +57,10 @@ bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::Trans
             return true;
         } catch (tf::TransformException& ex){
             res.error_msg = ex.what();
-            ROS_WARN("Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            if (i == 0)
+                ROS_WARN_DELAYED_THROTTLE(10, "Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            else
+                ROS_ERROR("Transform error at 2nd attempt");
 
             // set time to 0-time (= get latest transform) and try again
             p_in.stamp_ = ros::Time();
@@ -82,7 +88,10 @@ bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::Transfo
             return true;
         } catch (tf::TransformException& ex){
             res.error_msg = ex.what();
-            ROS_WARN("Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            if (i == 0)
+                ROS_WARN_DELAYED_THROTTLE(10, "Transform error (trying again with zero-time): %s", res.error_msg.c_str());
+            else
+                ROS_ERROR("Transform error at 2nd attempt");
 
             // set time to 0-time (= get latest transform) and try again
             p_in.stamp_ = ros::Time();
