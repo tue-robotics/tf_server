@@ -18,6 +18,23 @@ bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::Loo
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
+            std::string* error_code;
+            bool result = tf_listener_->waitForTransform(req.target_frame,
+                                           req.source_frame,
+                                           req.target_time,
+                                           req.timeout,
+                                           ros::Duration(0.01),
+                                           error_code);
+            if(error_code != NULL) {
+                res.error_msg = *error_code;
+                return true;
+            }
+
+            if( !result){
+                res.error_msg = "Transform not found in time";
+                return true;
+            }
+
             tf::StampedTransform t;
 
             if (req.fixed_frame == "") {
@@ -49,6 +66,23 @@ bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::Trans
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
+            std::string* error_code;
+            bool result = tf_listener_->waitForTransform(req.target_frame,
+                                           req.fixed_frame,
+                                           req.target_time,
+                                           req.timeout,
+                                           ros::Duration(0.01),
+                                           error_code);
+            if(error_code != NULL) {
+                res.error_msg = *error_code;
+                return true;
+            }
+
+            if( !result){
+                res.error_msg = "Transform not found in time";
+                return true;
+            }
+
             tf::Stamped<tf::Point> p_out;
 
             if (req.fixed_frame == "") {
@@ -109,6 +143,23 @@ bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::Transfo
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
+            std::string* error_code;
+            bool result = tf_listener_->waitForTransform(req.target_frame,
+                                           req.fixed_frame,
+                                           req.target_time,
+                                           req.timeout,
+                                           ros::Duration(0.01),
+                                           error_code);
+            if(error_code != NULL) {
+                res.error_msg = *error_code;
+                return true;
+            }
+
+            if( !result){
+                res.error_msg = "Transform not found in time";
+                return true;
+            }
+
             tf::Stamped<tf::Pose> p_out;
 
             if (req.fixed_frame == "") {
