@@ -1,7 +1,6 @@
 string target_frame
 string source_frame
 time time
-duration timeout # How log to wait for this transform
 
 # More advanced lookup (time travel)
 time target_time

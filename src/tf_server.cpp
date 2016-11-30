@@ -5,12 +5,9 @@
 #include <tf_server/LookupTransform.h>
 #include <tf_server/TransformPoint.h>
 #include <tf_server/TransformPose.h>
-#include <tf_server/WaitForTransform.h>
 
 #include <std_msgs/String.h>
 #include <std_srvs/Empty.h>
-
-#include <string>
 
 tf::TransformListener* tf_listener_;
 
@@ -18,23 +15,6 @@ bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::Loo
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
-            std::string* error_code;
-            bool result = tf_listener_->waitForTransform(req.target_frame,
-                                           req.source_frame,
-                                           req.target_time,
-                                           req.timeout,
-                                           ros::Duration(0.01),
-                                           error_code);
-            if(error_code != NULL) {
-                res.error_msg = *error_code;
-                return true;
-            }
-
-            if( !result){
-                res.error_msg = "Transform not found in time";
-                return true;
-            }
-
             tf::StampedTransform t;
 
             if (req.fixed_frame == "") {
@@ -66,23 +46,6 @@ bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::Trans
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
-            std::string* error_code;
-            bool result = tf_listener_->waitForTransform(req.target_frame,
-                                           req.fixed_frame,
-                                           req.target_time,
-                                           req.timeout,
-                                           ros::Duration(0.01),
-                                           error_code);
-            if(error_code != NULL) {
-                res.error_msg = *error_code;
-                return true;
-            }
-
-            if( !result){
-                res.error_msg = "Transform not found in time";
-                return true;
-            }
-
             tf::Stamped<tf::Point> p_out;
 
             if (req.fixed_frame == "") {
@@ -107,35 +70,6 @@ bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::Trans
     return true;
 }
 
-bool srvWaitForTransform(tf_server::WaitForTransform::Request& req, tf_server::WaitForTransform::Response& res) {
-
-    res.error_msg = "";
-    bool result = false;
-    try{
-
-        std::string* error_code;
-        result = tf_listener_->waitForTransform(req.target_frame,
-                                       req.fixed_frame,
-                                       req.target_time,
-                                       req.timeout,
-                                       ros::Duration(0.01),
-                                       error_code);
-        if(error_code != NULL) {
-            res.error_msg = *error_code;
-        }
-
-        if( !result){
-            res.error_msg = "Transform not found in time";
-        }
-        return true;
-    } catch (tf::TransformException& ex){
-        res.error_msg = ex.what();
-        ROS_WARN_DELAYED_THROTTLE(10, "Transform error: %s", res.error_msg.c_str());
-    }
-
-    return true;
-}
-
 bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::TransformPose::Response& res) {
     tf::Stamped<tf::Pose> p_in;
     tf::poseStampedMsgToTF(req.pose, p_in);
@@ -143,23 +77,6 @@ bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::Transfo
     for(int i = 0; i < 2; ++i) {
         res.error_msg = "";
         try{
-            std::string* error_code;
-            bool result = tf_listener_->waitForTransform(req.target_frame,
-                                           req.fixed_frame,
-                                           req.target_time,
-                                           req.timeout,
-                                           ros::Duration(0.01),
-                                           error_code);
-            if(error_code != NULL) {
-                res.error_msg = *error_code;
-                return true;
-            }
-
-            if( !result){
-                res.error_msg = "Transform not found in time";
-                return true;
-            }
-
             tf::Stamped<tf::Pose> p_out;
 
             if (req.fixed_frame == "") {
@@ -195,7 +112,6 @@ int main(int argc, char **argv) {
     ros::ServiceServer srv_lookup_transform = nh.advertiseService("/tf/lookup_transform", srvLookupTransform);
     ros::ServiceServer srv_transform_point = nh.advertiseService("/tf/transform_point", srvTransformPoint);
     ros::ServiceServer srv_transform_pose = nh.advertiseService("/tf/transform_pose", srvTransformPose);
-    ros::ServiceServer srv_wait_for_transform = nh.advertiseService("/tf/wait_for_transform", srvWaitForTransform);
 
     // spin
     ros::spin();
