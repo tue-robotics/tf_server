@@ -1,5 +1,6 @@
 geometry_msgs/PoseStamped pose
 string target_frame
+duration timeout # How log to wait for this transform
 
 # More advanced lookup (time travel)
 time target_time

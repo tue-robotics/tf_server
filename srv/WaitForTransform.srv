@@ -1,0 +1,6 @@
+string target_frame # From this frame
+string fixed_frame # To this frame
+time target_time # Give the transform at this time
+duration timeout # How log to wait for this transform
+---
+string error_msg
