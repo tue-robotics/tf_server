@@ -32,7 +32,7 @@ class TFClient:
         req.point = point
         req.target_frame = target_frame
         req.target_time = target_time
-        req.fixed_frame = fixed_frame
+        req.fixed_frame = fixed_frame if fixed_frame else point.header.frame_id
         req.timeout = timeout
 
         resp = self._srv_transform_point(req)
@@ -48,7 +48,7 @@ class TFClient:
         req.pose = pose
         req.target_frame = target_frame
         req.target_time = target_time
-        req.fixed_frame = fixed_frame
+        req.fixed_frame = fixed_frame if fixed_frame else pose.header.frame_id
         req.timeout = timeout
 
         resp = self._srv_transform_pose(req)
