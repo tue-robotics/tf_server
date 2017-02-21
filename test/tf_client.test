@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="tf_server" type="tf_server" name="tf_server" />
+  <node pkg="tf" name="top_to_bottom_tf" type="static_transform_publisher" args="1 1 1 0 0 0 1 /top /bottom 10"/>
+  <test test-name="test_tf_client" pkg="tf_server" type="test_client.py" />
+</launch>
