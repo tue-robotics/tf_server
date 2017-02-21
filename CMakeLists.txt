@@ -18,3 +18,8 @@ include_directories(
 add_executable(tf_server src/tf_server.cpp)
 target_link_libraries(tf_server ${catkin_LIBRARIES})
 add_dependencies(tf_server ${PROJECT_NAME}_generate_messages_cpp)
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/tf_client.test)
+endif()

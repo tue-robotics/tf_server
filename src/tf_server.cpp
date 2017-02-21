@@ -15,7 +15,7 @@
 tf::TransformListener* tf_listener_;
 
 bool srvLookupTransform(tf_server::LookupTransform::Request& req, tf_server::LookupTransform::Response& res) {
-    ROS_DEBUG("srvLookupTransform(%s, %s, %d, %d)", req.target_frame.c_str(), req.source_frame.c_str(), req.time.toSec(), req.timeout.toSec());
+    ROS_DEBUG("srvLookupTransform(%s, %s, %f, %f)", req.target_frame.c_str(), req.source_frame.c_str(), req.time.toSec(), req.timeout.toSec());
     for(int i = 0; i < 2; ++i) {
         try{
             std::string error_msg;
@@ -101,7 +101,7 @@ bool srvTransformPoint(tf_server::TransformPoint::Request& req, tf_server::Trans
 
 bool srvWaitForTransform(tf_server::WaitForTransform::Request& req, tf_server::WaitForTransform::Response& res) 
 {
-    ROS_DEBUG("srvWaitForTransform(%s, %s, %d, %d)", req.target_frame.c_str(), req.fixed_frame.c_str(), req.target_time.toSec(), req.timeout.toSec());
+    ROS_DEBUG("srvWaitForTransform(%s, %s, %f, %f)", req.target_frame.c_str(), req.fixed_frame.c_str(), req.target_time.toSec(), req.timeout.toSec());
     try{
         std::string error_msg;
         bool result = tf_listener_->waitForTransform(req.target_frame,
@@ -125,7 +125,7 @@ bool srvWaitForTransform(tf_server::WaitForTransform::Request& req, tf_server::W
 }
 
 bool srvTransformPose(tf_server::TransformPose::Request& req, tf_server::TransformPose::Response& res) {
-    ROS_DEBUG("srvTransformPose(%s, %s, %d, %d)", req.target_frame.c_str(), req.fixed_frame.c_str(), req.target_time.toSec(), req.timeout.toSec());
+    ROS_DEBUG("srvTransformPose(%s, %s, %f, %f)", req.target_frame.c_str(), req.fixed_frame.c_str(), req.target_time.toSec(), req.timeout.toSec());
     tf::Stamped<tf::Pose> p_in;
     tf::poseStampedMsgToTF(req.pose, p_in);
 
