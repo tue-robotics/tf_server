@@ -87,9 +87,7 @@ class TFClient:
             raise tf.Exception(resp.error_msg)
             rospy.logerr(resp.error_msg)
         else:
-            t = resp.transform.transform.translation
-            r = resp.transform.transform.rotation
-            return (t.x, t.y, t.z), (r.x, r.y, r.z, r.w) 
+            return resp.transform
 
 if __name__ == '__main__':
     rospy.init_node('tf_client')
